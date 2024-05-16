@@ -1,9 +1,10 @@
 name: Draft Release
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
-      - '**'
+      - main
   workflow_dispatch:
     
 permissions:
@@ -12,6 +13,7 @@ permissions:
 
 jobs:
   build:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     env:
@@ -31,7 +33,13 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f ${{ env.REQUIREMENTS_FILE }} ]; then pip install -r ${{ env.REQUIREMENTS_FILE }}; fi
 
+      - name: Run tests
+        run: |
+          # Führe hier deine Tests aus
+          echo "Running tests..."
+
   release_draft:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     needs: build
 
