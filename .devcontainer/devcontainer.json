@@ -14,13 +14,13 @@
 				"GitHub.copilot" // GitHub Copilot Erweiterung
 			]
 		}
-	}
+	},
 
 	// Verwende 'forwardPorts', um eine Liste von Ports innerhalb des Containers lokal verfügbar zu machen.
 	// "forwardPorts": [],
 
 	// Verwende 'postCreateCommand', um Befehle nach dem Erstellen des Containers auszuführen.
-	// "postCreateCommand": "pip3 install --user -r requirements.txt",
+	"postCreateCommand": "pip3 install --user -r requirements.txt",
 
 	// Konfiguriere werkzeugspezifische Eigenschaften.
 	// "customizations": {},
