@@ -45,6 +45,8 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=sha
+            type=ref,event=branch,pattern=main
+            latest
 
       - name: Print labels and tags
         run: |
