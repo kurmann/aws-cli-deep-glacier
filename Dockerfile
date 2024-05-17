@@ -1,4 +1,6 @@
-# Verwende ein offizielles Python-Image als Basis
+# Verwende eine Alternativen zu Debian Bullseye
+# Sehr kleines und minimal gehaltenes Linux-Image.
+# Alpine basier auf musl statt glibc, was manchmal zu Kompatibilitätsproblemen mit bestimmten Python-Paketen führen kann.
 FROM python:3.12-bullseye
 
 # Setze das Arbeitsverzeichnis im Container
