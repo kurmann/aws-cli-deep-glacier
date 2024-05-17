@@ -23,9 +23,21 @@ Dieses Repository enthält Python-Skripte, die bei der Verwaltung von S3-Buckets
    python3 -m pip install -r requirements.txt
    ```
 
-## Verfügbare Skripte
+## Verwendung
 
-### Restore Deep Glacier
+### Startskript
+
+Ein neues Startskript (`start.py`) wurde hinzugefügt, das den Benutzer durch die verfügbaren Skripte führt. Es wird empfohlen, die AWS CLI-Konfiguration zuerst vorzunehmen, um sicherzustellen, dass alle Skripte ordnungsgemäß funktionieren.
+
+**Start des Hauptskripts:**
+
+```bash
+python3 scripts/start.py
+```
+
+### Verfügbare Skripte
+
+#### Restore Deep Glacier
 
 **Script-Datei:** `restore_deep_glacier.py`
 
@@ -40,10 +52,10 @@ Dieses Skript initiiert die Wiederherstellung aller Objekte in einem bestimmten 
 **Beispielaufruf:**
 
 ```bash
-python3 restore_deep_glacier.py dein-bucket-name pfad/zum/verzeichnis Bulk
+python3 scripts/restore_deep_glacier.py dein-bucket-name pfad/zum/verzeichnis Bulk
 ```
 
-### List Buckets
+#### List Buckets
 
 **Script-Datei:** `list_buckets.py`
 
@@ -52,10 +64,10 @@ Dieses Skript listet alle S3-Buckets in deinem AWS-Konto auf.
 **Beispielaufruf:**
 
 ```bash
-python3 list_buckets.py
+python3 scripts/list_buckets.py
 ```
 
-### Check Restore Status
+#### Check Restore Status
 
 **Script-Datei:** `check_restore_status.py`
 
@@ -69,9 +81,34 @@ Dieses Skript überprüft den Wiederherstellungsstatus aller Objekte in einem be
 **Beispielaufruf:**
 
 ```bash
-python3 check_restore_status.py dein-bucket-name pfad/zum/verzeichnis
+python3 scripts/check_restore_status.py dein-bucket-name pfad/zum/verzeichnis
 ```
+
+#### AWS CLI Konfiguration
+
+**Script-Datei:** `configure_aws.py`
+
+Dieses Skript konfiguriert die AWS CLI mit den notwendigen Zugangsdaten. Es wird empfohlen, dieses Skript zuerst auszuführen, wenn die AWS CLI noch nicht konfiguriert ist.
+
+**Beispielaufruf:**
+
+```bash
+python3 scripts/configure_aws.py
+```
+
+### Empfohlene Reihenfolge
+
+1. Konfiguriere die AWS CLI:
+   ```bash
+   python3 scripts/configure_aws.py
+   ```
+2. Starte das Hauptskript:
+   ```bash
+   python3 scripts/start.py
+   ```
 
 ## Lizenz
 
 Dieses Projekt steht unter der MIT-Lizenz. Weitere Informationen findest du in der `LICENSE`-Datei.
+
+Mit dieser Dokumentation wird klar, dass ein Startskript vorhanden ist, das den Benutzer durch die verfügbaren Skripte führt, und dass die Konfiguration der AWS CLI zuerst vorgenommen werden sollte, um sicherzustellen, dass alle Skripte ordnungsgemäß funktionieren.
