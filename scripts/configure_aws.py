@@ -5,7 +5,9 @@ def configure_aws():
     print("AWS CLI ist nicht konfiguriert. Bitte gib deine AWS-Zugangsdaten ein.")
     aws_access_key_id = input("AWS Access Key ID: ").strip()
     aws_secret_access_key = input("AWS Secret Access Key: ").strip()
-    aws_default_region = input("AWS Region (z.B. us-west-1): ").strip()
+    aws_default_region = input("AWS Region (Standard: eu-west-1): ").strip()
+    if not aws_default_region:
+        aws_default_region = "eu-west-1"
     
     commands = [
         f"aws configure set aws_access_key_id {aws_access_key_id}",
@@ -17,6 +19,8 @@ def configure_aws():
         os.system(command)
     
     print("AWS CLI Konfiguration abgeschlossen.")
+    print("Starte das Hauptskript erneut...")
+    os.system("python3 scripts/start.py")
 
 if __name__ == "__main__":
     configure_aws()
