@@ -23,6 +23,22 @@ Dieses Repository enthält Python-Skripte, die bei der Verwaltung von S3-Buckets
    python3 -m pip install -r requirements.txt
    ```
 
+### Docker-Image verwenden
+
+Du kannst ein Docker-Image verwenden, um die Skripte in einer isolierten Umgebung auszuführen. Das Docker-Image wird automatisch erstellt und auf Docker Hub veröffentlicht.
+
+**Docker-Image ausführen:**
+
+1. **Docker-Image ziehen:**
+   ```bash
+   docker pull kurmann/s3-restore-utilities:latest
+   ```
+
+2. **Docker-Container im interaktiven Modus starten:**
+   ```bash
+   docker run -it kurmann/s3-restore-utilities:latest
+   ```
+
 ## Verwendung
 
 ### Startskript
@@ -110,5 +126,3 @@ python3 scripts/configure_aws.py
 ## Lizenz
 
 Dieses Projekt steht unter der MIT-Lizenz. Weitere Informationen findest du in der `LICENSE`-Datei.
-
-Mit dieser Dokumentation wird klar, dass ein Startskript vorhanden ist, das den Benutzer durch die verfügbaren Skripte führt, und dass die Konfiguration der AWS CLI zuerst vorgenommen werden sollte, um sicherzustellen, dass alle Skripte ordnungsgemäß funktionieren.
