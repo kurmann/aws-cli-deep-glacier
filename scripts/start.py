@@ -1,4 +1,3 @@
-
 import os
 
 def main():
@@ -7,7 +6,8 @@ def main():
     print("1. Restore Deep Glacier")
     print("2. List Buckets")
     print("3. Check Restore Status")
-    print("Wähle eine Option (1, 2 oder 3):")
+    print("4. AWS CLI konfigurieren")
+    print("Wähle eine Option (1, 2, 3 oder 4):")
 
     choice = input().strip()
 
@@ -22,8 +22,10 @@ def main():
         bucket_name = input("Gib den Namen des S3-Buckets ein: ").strip()
         prefix = input("Gib den Pfad zum Verzeichnis ein, dessen Wiederherstellungsstatus du überprüfen möchtest: ").strip()
         os.system(f"python3 scripts/check_restore_status.py {bucket_name} {prefix}")
+    elif choice == '4':
+        os.system("python3 scripts/configure_aws.py")
     else:
-        print("Ungültige Auswahl. Bitte starte das Skript erneut und wähle 1, 2 oder 3.")
+        print("Ungültige Auswahl. Bitte starte das Skript erneut und wähle 1, 2, 3 oder 4.")
 
 if __name__ == "__main__":
     main()
