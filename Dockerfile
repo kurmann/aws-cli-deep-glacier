@@ -1,7 +1,7 @@
 # Verwende eine Alternativen zu Debian Bullseye
 # Sehr kleines und minimal gehaltenes Linux-Image.
 # Alpine basier auf musl statt glibc, was manchmal zu Kompatibilitätsproblemen mit bestimmten Python-Paketen führen kann.
-FROM python:3.12-bullseye
+FROM python:3.12-alpine
 
 # Setze das Arbeitsverzeichnis im Container
 WORKDIR /usr/src/app
