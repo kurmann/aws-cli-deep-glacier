@@ -11,9 +11,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Installiere die AWS CLI
-RUN apt-get update && \
-    apt-get install -y awscli && \
-    apt-get clean
+RUN apk add --no-cache aws-cli
 
 # Kopiere den restlichen Quellcode ins Arbeitsverzeichnis
 COPY scripts/ ./scripts/
