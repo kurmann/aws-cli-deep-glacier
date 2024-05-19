@@ -2,7 +2,11 @@ name: Draft Release
 
 on:
   pull_request:
-    types: [closed]
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
     branches:
       - main
   workflow_dispatch:
