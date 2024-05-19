@@ -21,5 +21,5 @@ RUN chmod +x scripts/*.py
 RUN echo 'echo "Willkommen zu den S3 Restore Utilities!"' >> ~/.profile && \
     echo 'python3 /usr/src/app/scripts/start.py' >> ~/.profile
 
-# Definiere den Befehl zum Starten des Containers im interaktiven Modus
-CMD ["sh"]
+# Starte das Startskript und öffne danach eine Shell
+ENTRYPOINT ["sh", "-c", "python3 /usr/src/app/scripts/start.py && exec sh"]
