@@ -24,6 +24,11 @@ template: |
   ## Änderungen
   $CHANGES
 
+# Vorlage für jede Änderung (Pull Request), einschließlich Beschreibung.
+change-template: |
+  - $TITLE (@$AUTHOR) [#$NUMBER]
+    $BODY
+
 # Version-Resolver bestimmt die Art der Versionserhöhung basierend auf den PR Labels.
 version-resolver:
   major:
