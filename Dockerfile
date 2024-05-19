@@ -1,6 +1,4 @@
-# Verwende eine Alternativen zu Debian Bullseye
-# Sehr kleines und minimal gehaltenes Linux-Image.
-# Alpine basier auf musl statt glibc, was manchmal zu Kompatibilitätsproblemen mit bestimmten Python-Paketen führen kann.
+# Verwende ein offizielles Python-Image als Basis
 FROM python:3.13.0b1-alpine3.19
 
 # Setze das Arbeitsverzeichnis im Container
@@ -9,7 +7,6 @@ WORKDIR /usr/src/app
 # Kopiere die requirements.txt und installiere die Abhängigkeiten
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-
 # Installiere die AWS CLI
 RUN apk add --no-cache aws-cli
 
@@ -19,5 +16,9 @@ COPY scripts/ ./scripts/
 # Stelle sicher, dass die Skripte ausführbar sind
 RUN chmod +x scripts/*.py
 
+# Erstelle eine .bashrc Datei mit dem Startbefehl
+RUN echo 'echo "Willkommen zu den S3 Restore Utilities!"' >> ~/.bashrc && \
+    echo 'python3 /usr/src/app/scripts/start.py' >> ~/.bashrc
+
 # Definiere den Befehl zum Starten des Containers im interaktiven Modus
-CMD ["python3", "./scripts/start.py"]
+CMD ["bash"]
