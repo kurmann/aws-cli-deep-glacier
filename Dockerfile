@@ -30,5 +30,5 @@ RUN echo 'echo "Willkommen zu den S3 Restore Utilities!"' >> ~/.profile && \
 # Verlinke die .shrc in .profile, um sicherzustellen, dass die Einstellungen geladen werden
 RUN echo 'if [ -f ~/.shrc ]; then . ~/.shrc; fi' >> ~/.profile
 
-# Starte das Startskript und öffne danach eine Shell
-ENTRYPOINT ["sh", "-c", "echo 'Willkommen zu den S3 Restore Utilities!' && python3 /usr/src/app/scripts/start.py && exec sh"]
+# Führe das Skript aus
+CMD ["python3", "/usr/src/app/scripts/start.py"]
