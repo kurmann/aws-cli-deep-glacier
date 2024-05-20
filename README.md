@@ -51,6 +51,19 @@ Ein neues Startskript (`start.py`) wurde hinzugefügt, das den Benutzer durch di
 python3 scripts/start.py
 ```
 
+Beim Starten der Anwendung sieht der Anwender folgenden Bildschirm:
+
+```text
+Willkommen zu den S3 Restore Utilities!
+Hier sind die verfügbaren Skripte:
+1. Restore Deep Glacier
+2. List Buckets
+3. Check Restore Status
+4. AWS CLI konfigurieren
+5. Download S3 Directory
+Wähle eine Option (1, 2, 3, 4 oder 5):
+```
+
 ### Verfügbare Skripte
 
 #### Restore Deep Glacier
@@ -110,6 +123,34 @@ Dieses Skript konfiguriert die AWS CLI mit den notwendigen Zugangsdaten. Es wird
 
 ```bash
 python3 scripts/configure_aws.py
+```
+
+#### Download S3 Directory
+
+**Script-Datei:** `download_s3_directory.py`
+
+Dieses Skript lädt ein gesamtes Verzeichnis aus einem S3-Bucket herunter.
+
+**Eingabeparameter:**
+
+- `bucket-name`: Der Name des S3-Buckets.
+- `prefix`: Der Pfad zum Verzeichnis, das du herunterladen möchtest.
+- `local-dir`: Der lokale Pfad, in den die Dateien heruntergeladen werden sollen.
+
+**Beispielaufruf:**
+
+```bash
+python3 scripts/download_s3_directory.py dein-bucket-name pfad/zum/verzeichnis lokaler-pfad
+```
+
+### Docker Logs
+
+Du kannst die Logs der Skripte in Echtzeit überwachen, indem du die Docker-Logs verwendest. Dies ist besonders nützlich, um den Fortschritt und mögliche Fehler zu sehen.
+
+**Logs in Echtzeit überwachen:**
+
+```bash
+docker logs -f <container_id>
 ```
 
 ### Empfohlene Reihenfolge
