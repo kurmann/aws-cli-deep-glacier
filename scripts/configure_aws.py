@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 def configure_aws():
     """Konfiguriert die AWS CLI mit Zugangsdaten."""
@@ -20,7 +21,9 @@ def configure_aws():
     
     print("AWS CLI Konfiguration abgeschlossen.")
     print("Starte das Hauptskript erneut...")
-    os.system("python3 scripts/start.py")
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    start_script = os.path.join(script_dir, 'start.py')
+    subprocess.run(['python3', start_script])
 
 if __name__ == "__main__":
     configure_aws()
