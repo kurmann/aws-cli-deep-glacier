@@ -1,15 +1,17 @@
 import os
 import subprocess
-import getpass
 
 def configure_aws():
-    """Konfiguriert die AWS CLI mit Zugangsdaten."""
-    print("AWS CLI ist nicht konfiguriert. Bitte gib deine AWS-Zugangsdaten ein.")
-    aws_access_key_id = input("AWS Access Key ID: ").strip()
-    aws_secret_access_key = getpass.getpass("AWS Secret Access Key: ").strip()
-    aws_default_region = input("AWS Region (Standard: eu-west-1): ").strip()
-    if not aws_default_region:
-        aws_default_region = "eu-west-1"
+    """Konfiguriert die AWS CLI mit Zugangsdaten aus Umgebungsvariablen."""
+    aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+    aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+    aws_default_region = os.getenv('AWS_DEFAULT_REGION', 'eu-west-1')
+
+    if not aws_access_key_id or not aws_secret_access_key:
+        print("AWS_ACCESS_KEY_ID oder AWS_SECRET_ACCESS_KEY ist nicht gesetzt.")
+        print("Bitte setze die Umgebungsvariablen AWS_ACCESS_KEY_ID und AWS_SECRET_ACCESS_KEY.")
+        print("Bei Verwendung von Docker Composer kannst du die .env-Datei verwenden.")
+        return
 
     commands = [
         f"aws configure set aws_access_key_id {aws_access_key_id}",
@@ -21,10 +23,6 @@ def configure_aws():
         os.system(command)
 
     print("AWS CLI Konfiguration abgeschlossen.")
-    print("Starte das Hauptskript erneut...")
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    start_script = os.path.join(script_dir, 'start.py')
-    subprocess.run(['python3', start_script])
 
 if __name__ == "__main__":
     configure_aws()
