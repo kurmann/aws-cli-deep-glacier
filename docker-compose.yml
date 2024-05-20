@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  s3-restore-utilities:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: s3-restore-utilities
+    volumes:
+      - ./downloads:/usr/src/app/downloads
+      - ./logs:/usr/src/app/logs
+    env_file:
+      - .env
+    tty: true
+    stdin_open: true
+
+volumes:
+  downloads:
+  logs:
