@@ -1,3 +1,4 @@
+
 # S3 Restore Utilities
 
 Dieses Repository enthält Python-Skripte, die bei der Verwaltung von S3-Buckets und der Wiederherstellung von Objekten aus Glacier helfen.
@@ -39,30 +40,107 @@ Du kannst ein Docker-Image verwenden, um die Skripte in einer isolierten Umgebun
    docker run -it kurmann/s3-restore-utilities:latest
    ```
 
-## Verwendung
+## Verwendung von Docker Compose
 
-### Startskript
+Docker Compose ermöglicht es, Multi-Container-Docker-Anwendungen einfach zu definieren und auszuführen. Hier sind die Schritte zur Nutzung von Docker Compose in verschiedenen Umgebungen, einschließlich Synology NAS.
 
-Ein neues Startskript (`start.py`) wurde hinzugefügt, das den Benutzer durch die verfügbaren Skripte führt. Es wird empfohlen, die AWS CLI-Konfiguration zuerst vorzunehmen, um sicherzustellen, dass alle Skripte ordnungsgemäß funktionieren.
+### Docker Compose einrichten
 
-**Start des Hauptskripts:**
+1. **Erstelle eine `docker-compose.yml` im Root-Verzeichnis**:
+   ```yaml
+   version: '3.8'
 
+   services:
+     s3-restore-utilities:
+       build:
+         context: .
+         dockerfile: Dockerfile
+       container_name: s3-restore-utilities
+       volumes:
+         - /volume1/docker/s3-restore-utilities/downloads:/usr/src/app/downloads
+         - /volume1/docker/s3-restore-utilities/logs:/usr/src/app/logs
+       env_file:
+         - .env
+       tty: true
+
+   volumes:
+     downloads:
+     logs:
+   ```
+
+2. **Erstelle eine `.env`-Datei im Root-Verzeichnis**:
+   Kopiere die bereitgestellte `.env.example` und fülle deine AWS-Zugangsdaten aus:
+   ```env
+   AWS_ACCESS_KEY_ID=dein_access_key_id
+   AWS_SECRET_ACCESS_KEY=dein_secret_access_key
+   AWS_DEFAULT_REGION=eu-west-1
+   ```
+
+### Docker Compose auf einer Synology NAS verwenden
+
+1. **Docker und Docker Compose installieren**:
+   - Installiere Docker über das Paketzentrum auf deiner Synology NAS.
+   - Docker Compose ist in der Regel bereits enthalten, falls nicht, kann es manuell installiert werden.
+
+2. **Dateien auf die Synology NAS hochladen**:
+   - Lade die `docker-compose.yml` und `.env`-Dateien über die File Station oder per SSH auf deine Synology NAS.
+
+3. **Terminal (SSH) öffnen**:
+   - Öffne ein Terminal zu deiner Synology NAS und navigiere zum Verzeichnis, in dem sich die `docker-compose.yml` befindet.
+
+4. **Docker Compose ausführen**:
+   ```bash
+   docker-compose up --build
+   ```
+
+5. **Docker Compose im Hintergrund ausführen**:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+### Überwachen der Container-Logs
+
+Verwende den folgenden Befehl, um die Logs der Container in Echtzeit zu überwachen:
 ```bash
-python3 scripts/start.py
+docker-compose logs -f
 ```
 
-Beim Starten der Anwendung sieht der Anwender folgenden Bildschirm:
+### Verwendung von `tty` in Docker Compose
 
-```text
-Willkommen zu den S3 Restore Utilities!
-Hier sind die verfügbaren Skripte:
-1. Restore Deep Glacier
-2. List Buckets
-3. Check Restore Status
-4. AWS CLI konfigurieren
-5. Download S3 Directory
-Wähle eine Option (1, 2, 3, 4 oder 5):
+- **`tty: true`**: Aktiviert einen pseudo-TTY im Container, wodurch der Container eine Terminal-Schnittstelle erhält.
+- **Nutzen**: Dies ist besonders nützlich für interaktive Anwendungen oder Skripte, die Terminal-Eingaben erwarten.
+
+### Volumes in Docker Compose
+
+Volumes sind ein wichtiger Mechanismus in Docker, um Daten dauerhaft zu speichern und zwischen Containern zu teilen. 
+
+#### Vorteile der Verwendung von Volumes:
+
+- **Persistenz**: Daten in Volumes bleiben erhalten, auch wenn der Container gelöscht und neu erstellt wird.
+- **Isolation**: Volumes isolieren Daten vom Container-Dateisystem, was die Verwaltung und Sicherung vereinfacht.
+- **Leistung**: Volumes bieten eine bessere Leistung im Vergleich zur Bind-Mounts, insbesondere bei vielen I/O-Operationen.
+
+#### Beispiel:
+
+In der Docker Compose-Datei sind zwei Volumes definiert:
+
+```yaml
+volumes:
+  downloads:
+  logs:
 ```
+
+Diese Volumes werden im Dienst `s3-restore-utilities` verwendet, um die Verzeichnisse `/usr/src/app/downloads` und `/usr/src/app/logs` im Container mit den entsprechenden Verzeichnissen auf dem Host zu verknüpfen:
+
+```yaml
+services:
+  s3-restore-utilities:
+    volumes:
+      - /volume1/docker/s3-restore-utilities/downloads:/usr/src/app/downloads
+      - /volume1/docker/s3-restore-utilities/logs:/usr/src/app/logs
+```
+
+Diese Konfiguration stellt sicher, dass Dateien, die in den Verzeichnissen `downloads` und `logs` gespeichert werden, auch nach dem Neustart oder der Neu-Erstellung des Containers erhalten bleiben.
 
 ### Verfügbare Skripte
 
