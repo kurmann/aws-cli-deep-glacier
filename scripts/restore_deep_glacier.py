@@ -6,7 +6,7 @@ from configure_aws import configure_aws
 BUCKET_NAME = 'dein-bucket-name'
 PREFIX = 'pfad/zum/verzeichnis/'  # Der Pfad zum Verzeichnis, das du wiederherstellen möchtest
 RESTORE_DAYS = 7
-GLACIER_TIER = 'Bulk'  # Mögliche Werte: 'Bulk', 'Standard', 'Expedited'
+DEFAULT_GLACIER_TIER = 'Bulk'  # Mögliche Werte: 'Bulk', 'Standard', 'Expedited'
 
 def restore_objects(bucket_name, prefix, restore_days, glacier_tier):
     s3 = boto3.client('s3')
@@ -35,11 +35,11 @@ def restore_objects(bucket_name, prefix, restore_days, glacier_tier):
         print("Keine Objekte gefunden.")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print(f"Usage: {sys.argv[0]} <bucket-name> <prefix> <glacier-tier>")
+    if len(sys.argv) < 3 or len(sys.argv) > 4:
+        print(f"Usage: {sys.argv[0]} <bucket-name> <prefix> [glacier-tier]")
     else:
         configure_aws()
         BUCKET_NAME = sys.argv[1]
         PREFIX = sys.argv[2]
-        GLACIER_TIER = sys.argv[3]
+        GLACIER_TIER = sys.argv[3] if len(sys.argv) == 4 else DEFAULT_GLACIER_TIER
         restore_objects(BUCKET_NAME, PREFIX, RESTORE_DAYS, GLACIER_TIER)
