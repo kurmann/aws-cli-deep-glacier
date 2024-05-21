@@ -19,8 +19,9 @@ def configure_aws():
         f"aws configure set region {aws_default_region}"
     ]
 
+    # Führe die AWS CLI-Konfigurationsbefehle aus und unterdrücke die Ausgabe auf der Konsole aus Sicherheitsgründen
     for command in commands:
-        os.system(command)
+        subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     print("AWS CLI Konfiguration abgeschlossen.")
 
