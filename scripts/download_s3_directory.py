@@ -2,6 +2,7 @@ import boto3
 import os
 from tqdm import tqdm
 import sys
+from configure_aws import configure_aws
 
 def get_s3_objects(bucket, prefix):
     s3 = boto3.client('s3')
@@ -67,6 +68,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print(f"Usage: {sys.argv[0]} <bucket-name> <s3-directory> <local-directory>")
     else:
+        configure_aws()
         bucket_name = sys.argv[1]
         s3_directory = sys.argv[2]
         local_directory = sys.argv[3]
