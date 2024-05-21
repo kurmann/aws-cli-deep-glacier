@@ -1,5 +1,6 @@
 import boto3
 import sys
+from configure_aws import configure_aws
 
 # AWS S3-Konfigurationsvariablen
 BUCKET_NAME = 'dein-bucket-name'
@@ -37,6 +38,7 @@ if __name__ == "__main__":
     if len(sys.argv) != 4:
         print(f"Usage: {sys.argv[0]} <bucket-name> <prefix> <glacier-tier>")
     else:
+        configure_aws()
         BUCKET_NAME = sys.argv[1]
         PREFIX = sys.argv[2]
         GLACIER_TIER = sys.argv[3]
