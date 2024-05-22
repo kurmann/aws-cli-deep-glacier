@@ -13,9 +13,10 @@ RUN apk add --no-cache aws-cli
 
 # Kopiere den restlichen Quellcode ins Arbeitsverzeichnis
 COPY scripts/ ./scripts/
+COPY supervisor.py ./
 
 # Stelle sicher, dass die Skripte ausführbar sind
 RUN chmod +x scripts/*.py
 
 # Führe das Skript aus
-CMD ["python3", "/usr/src/app/scripts/start.py"]
+CMD ["python3", "supervisor.py"]
