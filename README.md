@@ -1,30 +1,8 @@
-
 # S3 Restore Utilities
 
 Dieses Repository enthält Python-Skripte, die bei der Verwaltung von S3-Buckets und der Wiederherstellung von Objekten aus Glacier helfen.
 
-## Voraussetzungen
-
-- Python 3.x
-- Boto3 (AWS SDK for Python, für die Interaktion mit AWS-Diensten)
-- TQDM (Bibliothek zur Anzeige von Fortschrittsbalken)
-
-## Installation
-
-### Python-Abhängigkeiten installieren
-
-1. Erstelle eine `requirements.txt`-Datei im Stammverzeichnis deines Projekts mit folgendem Inhalt:
-   ```
-   boto3
-   tqdm
-   ```
-
-2. Installiere die Abhängigkeiten:
-   ```bash
-   python3 -m pip install -r requirements.txt
-   ```
-
-### Docker-Image verwenden
+## Verwendung des Docker-Images
 
 Du kannst ein Docker-Image verwenden, um die Skripte in einer isolierten Umgebung auszuführen. Das Docker-Image wird automatisch erstellt und auf Docker Hub veröffentlicht.
 
@@ -42,26 +20,24 @@ Du kannst ein Docker-Image verwenden, um die Skripte in einer isolierten Umgebun
 
 ## Verwendung von Docker Compose
 
-Docker Compose ermöglicht es, Multi-Container-Docker-Anwendungen einfach zu definieren und auszuführen. Hier sind die Schritte zur Nutzung von Docker Compose in verschiedenen Umgebungen, einschließlich Synology NAS.
+Docker Compose ermöglicht es, Multi-Container-Docker-Anwendungen einfach zu definieren und auszuführen. Hier ist die aktualisierte `docker-compose.yml`, die das Docker-Image direkt aus Docker Hub verwendet.
 
 ### Docker Compose einrichten
 
 1. **Erstelle eine `docker-compose.yml` im Root-Verzeichnis**:
    ```yaml
-   version: '3.8'
-
    services:
      s3-restore-utilities:
-       build:
-         context: .
-         dockerfile: Dockerfile
+       image: kurmann/s3-restore-utilities:latest
        container_name: s3-restore-utilities
        volumes:
          - /volume1/docker/s3-restore-utilities/downloads:/usr/src/app/downloads
          - /volume1/docker/s3-restore-utilities/logs:/usr/src/app/logs
        env_file:
          - .env
+       entrypoint: ["python3", "/usr/src/app/supervisor.py"]
        tty: true
+       stdin_open: true
 
    volumes:
      downloads:
@@ -90,12 +66,12 @@ Docker Compose ermöglicht es, Multi-Container-Docker-Anwendungen einfach zu def
 
 4. **Docker Compose ausführen**:
    ```bash
-   docker-compose up --build
+   docker-compose up
    ```
 
 5. **Docker Compose im Hintergrund ausführen**:
    ```bash
-   docker-compose up -d --build
+   docker-compose up -d
    ```
 
 ### Überwachen der Container-Logs
@@ -118,7 +94,7 @@ Volumes sind ein wichtiger Mechanismus in Docker, um Daten dauerhaft zu speicher
 
 - **Persistenz**: Daten in Volumes bleiben erhalten, auch wenn der Container gelöscht und neu erstellt wird.
 - **Isolation**: Volumes isolieren Daten vom Container-Dateisystem, was die Verwaltung und Sicherung vereinfacht.
-- **Leistung**: Volumes bieten eine bessere Leistung im Vergleich zur Bind-Mounts, insbesondere bei vielen I/O-Operationen.
+- **Leistung**: Volumes bieten eine bessere Leistung im Vergleich zu Bind-Mounts, insbesondere bei vielen I/O-Operationen.
 
 #### Beispiel:
 
@@ -144,9 +120,9 @@ Diese Konfiguration stellt sicher, dass Dateien, die in den Verzeichnissen `down
 
 ### Verfügbare Skripte
 
-#### Restore Deep Glacier
+Die Skripte werden über das `supervisor.py`-Skript aufgerufen, das sich im Root des Docker-Arbeitsverzeichnisses befindet. Verwende den `--help`-Parameter, um Informationen zu den erforderlichen Parametern für jedes Skript zu erhalten.
 
-**Script-Datei:** `restore_deep_glacier.py`
+#### Restore Deep Glacier
 
 Dieses Skript initiiert die Wiederherstellung aller Objekte in einem bestimmten Verzeichnis und dessen Unterverzeichnissen aus Glacier.
 
@@ -159,24 +135,20 @@ Dieses Skript initiiert die Wiederherstellung aller Objekte in einem bestimmten 
 **Beispielaufruf:**
 
 ```bash
-python3 scripts/restore_deep_glacier.py dein-bucket-name pfad/zum/verzeichnis Bulk
+docker-compose run s3-restore-utilities restore_deep_glacier dein-bucket-name pfad/zum/verzeichnis --glacier_tier Bulk
 ```
 
 #### List Buckets
-
-**Script-Datei:** `list_buckets.py`
 
 Dieses Skript listet alle S3-Buckets in deinem AWS-Konto auf.
 
 **Beispielaufruf:**
 
 ```bash
-python3 scripts/list_buckets.py
+docker-compose run s3-restore-utilities list_buckets
 ```
 
 #### Check Restore Status
-
-**Script-Datei:** `check_restore_status.py`
 
 Dieses Skript überprüft den Wiederherstellungsstatus aller Objekte in einem bestimmten Verzeichnis und dessen Unterverzeichnissen. Es gibt die Anzahl der Dateien aus, die wiederhergestellt werden können und jene, die es nicht können, und listet die Dateien gruppiert auf. Ein Fortschrittsbalken zeigt den Überprüfungsfortschritt an.
 
@@ -188,37 +160,23 @@ Dieses Skript überprüft den Wiederherstellungsstatus aller Objekte in einem be
 **Beispielaufruf:**
 
 ```bash
-python3 scripts/check_restore_status.py dein-bucket-name pfad/zum/verzeichnis
-```
-
-#### AWS CLI Konfiguration
-
-**Script-Datei:** `configure_aws.py`
-
-Dieses Skript konfiguriert die AWS CLI mit den notwendigen Zugangsdaten. Es wird empfohlen, dieses Skript zuerst auszuführen, wenn die AWS CLI noch nicht konfiguriert ist.
-
-**Beispielaufruf:**
-
-```bash
-python3 scripts/configure_aws.py
+docker-compose run s3-restore-utilities check_restore_status dein-bucket-name pfad/zum/verzeichnis
 ```
 
 #### Download S3 Directory
-
-**Script-Datei:** `download_s3_directory.py`
 
 Dieses Skript lädt ein gesamtes Verzeichnis aus einem S3-Bucket herunter.
 
 **Eingabeparameter:**
 
 - `bucket-name`: Der Name des S3-Buckets.
-- `prefix`: Der Pfad zum Verzeichnis, das du herunterladen möchtest.
-- `local-dir`: Der lokale Pfad, in den die Dateien heruntergeladen werden sollen.
+- `s3-directory`: Der Pfad zum Verzeichnis, das du herunterladen möchtest.
+- `local-directory`: Der lokale Pfad, in den die Dateien heruntergeladen werden sollen.
 
 **Beispielaufruf:**
 
 ```bash
-python3 scripts/download_s3_directory.py dein-bucket-name pfad/zum/verzeichnis lokaler-pfad
+docker-compose run s3-restore-utilities download_s3_directory dein-bucket-name pfad/zum/verzeichnis lokaler-pfad
 ```
 
 ### Docker Logs
@@ -228,19 +186,8 @@ Du kannst die Logs der Skripte in Echtzeit überwachen, indem du die Docker-Logs
 **Logs in Echtzeit überwachen:**
 
 ```bash
-docker logs -f <container_id>
+docker-compose logs -f
 ```
-
-### Empfohlene Reihenfolge
-
-1. Konfiguriere die AWS CLI:
-   ```bash
-   python3 scripts/configure_aws.py
-   ```
-2. Starte das Hauptskript:
-   ```bash
-   python3 scripts/start.py
-   ```
 
 ## Lizenz
 
