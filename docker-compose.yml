@@ -3,13 +3,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      container_name: s3-restore-utilities
+    container_name: s3-restore-utilities
     volumes:
       - /volume1/docker/s3-restore-utilities/downloads:/usr/src/app/downloads
       - /volume1/docker/s3-restore-utilities/logs:/usr/src/app/logs
     env_file:
       - .env
-    entrypoint: ["python3", "/usr/src/app/scripts/supervisor.py"]
+    entrypoint: ["python3", "/usr/src/app/supervisor.py"]
     tty: true
     stdin_open: true
 
