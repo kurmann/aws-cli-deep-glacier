@@ -1,9 +1,9 @@
 import boto3
-import sys
 from tqdm import tqdm
-from configure_aws import configure_aws
+from scripts.configure_aws import configure_aws
 
 def check_restore_status(bucket_name, prefix):
+    configure_aws()
     s3 = boto3.client('s3')
     paginator = s3.get_paginator('list_objects_v2')
     page_iterator = paginator.paginate(Bucket=bucket_name, Prefix=prefix)
@@ -53,12 +53,3 @@ def check_restore_status(bucket_name, prefix):
     print("\nNicht wiederherstellbare Dateien:")
     for key in non_restorable:
         print(f"- {key}")
-
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <bucket-name> <prefix>")
-    else:
-        configure_aws()
-        bucket_name = sys.argv[1]
-        prefix = sys.argv[2]
-        check_restore_status(bucket_name, prefix)

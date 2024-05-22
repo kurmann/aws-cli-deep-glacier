@@ -24,6 +24,3 @@ def configure_aws():
         subprocess.run(command, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
     print("AWS CLI Konfiguration abgeschlossen.")
-
-if __name__ == "__main__":
-    configure_aws()
