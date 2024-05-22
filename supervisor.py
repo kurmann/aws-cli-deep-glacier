@@ -17,7 +17,7 @@ def main():
 
     # List Buckets
     parser_list_buckets = subparsers.add_parser('list_buckets', help='Listet alle S3-Buckets auf')
-    parser_list_buckets.set_defaults(func=list_buckets)
+    parser_list_buckets.set_defaults(func=lambda args: list_buckets())
 
     # Check Restore Status
     parser_check_restore_status = subparsers.add_parser('check_restore_status', help='Überprüft den Wiederherstellungsstatus')
