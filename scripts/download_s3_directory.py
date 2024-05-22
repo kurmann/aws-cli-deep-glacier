@@ -1,8 +1,7 @@
 import boto3
 import os
 from tqdm import tqdm
-import sys
-from configure_aws import configure_aws
+from scripts.configure_aws import configure_aws
 
 def get_s3_objects(bucket, prefix):
     s3 = boto3.client('s3')
@@ -55,7 +54,8 @@ def download_with_progress(s3, bucket, objects, local_directory):
 
     return failed_downloads, skipped_files
 
-def main(bucket_name, s3_directory, local_directory):
+def download_s3_directory(bucket_name, s3_directory, local_directory):
+    configure_aws()
     s3 = boto3.client('s3')
     print(f"Lade Dateien aus s3://{bucket_name}/{s3_directory} in das lokale Verzeichnis {local_directory} herunter...")
 
@@ -75,13 +75,3 @@ def main(bucket_name, s3_directory, local_directory):
         print("Fehlgeschlagene Downloads:")
         for key in failed_downloads:
             print(f"- {key}")
-
-if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print(f"Usage: {sys.argv[0]} <bucket-name> <s3-directory> <local-directory>")
-    else:
-        configure_aws()
-        bucket_name = sys.argv[1]
-        s3_directory = sys.argv[2]
-        local_directory = sys.argv[3]
-        main(bucket_name, s3_directory, local_directory)
