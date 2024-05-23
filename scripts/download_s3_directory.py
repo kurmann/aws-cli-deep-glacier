@@ -18,17 +18,19 @@ def get_s3_objects(bucket, prefix):
 def download_file(s3, bucket, key, dest):
     if os.path.exists(dest):
         print(f"Überspringe {dest}, da die Datei bereits existiert.")
-        return
+        return False  # Datei wurde übersprungen
 
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     with open(dest, 'wb') as f:
         s3.download_fileobj(bucket, key, f)
+    return True  # Datei wurde erfolgreich heruntergeladen
 
 def download_with_progress(s3, bucket, objects, local_directory):
     total_size = sum(obj['Size'] for obj in objects)
     total_files = len(objects)
     failed_downloads = []
     skipped_files = 0
+    downloaded_files = 0
 
     with tqdm(total=total_size, unit='B', unit_scale=True, desc="Gesamtfortschritt") as pbar:
         for obj in objects:
@@ -48,11 +50,12 @@ def download_with_progress(s3, bucket, objects, local_directory):
                         pbar.update(bytes_amount)
 
                     s3.download_file(bucket, key, local_path, Callback=callback)
+                    downloaded_files += 1
             except Exception as e:
                 print(f"Fehler beim Herunterladen von {key}: {e}")
                 failed_downloads.append(key)
 
-    return failed_downloads, skipped_files
+    return failed_downloads, skipped_files, downloaded_files, total_size
 
 def download_s3_directory(bucket_name, s3_directory, local_directory):
     configure_aws()
@@ -65,10 +68,10 @@ def download_s3_directory(bucket_name, s3_directory, local_directory):
     print(f"Zu herunterladende Dateien: {total_files}")
     print(f"Gesamtgröße: {total_size / (1024*1024):.2f} MB")
 
-    failed_downloads, skipped_files = download_with_progress(s3, bucket_name, objects, local_directory)
+    failed_downloads, skipped_files, downloaded_files, downloaded_size = download_with_progress(s3, bucket_name, objects, local_directory)
 
     print("\nZusammenfassung des Herunterladeprozesses:")
-    print(f"Erfolgreich heruntergeladene Dateien: {total_files - len(failed_downloads) - skipped_files}")
+    print(f"Erfolgreich heruntergeladene Dateien: {downloaded_files} ({downloaded_size / (1024*1024):.2f} MB)")
     print(f"Fehlgeschlagene Downloads: {len(failed_downloads)}")
     print(f"Übersprungene Dateien (bereits vorhanden): {skipped_files}")
     if failed_downloads:
